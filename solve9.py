@@ -4,36 +4,23 @@ with open("input9.txt", "r") as f:
     square_lines = f.readlines()
 
 coords = [[int(n) for n in line.split(",")] for line in square_lines]
+polygon_lines = [(coords[i - 1], coords[i]) for i in range(len(coords))]
 
-max_area = 0
-for combination in itertools.combinations(coords, 2):
-    [x1, y1], [x2, y2] = combination
+part_1 = 0
+part_2 = 0
+for square in itertools.combinations(coords, 2):
+    [x1, y1], [x2, y2] = square
     area = (abs(x1 - x2) + 1) * (abs(y1 - y2) + 1)
-    if area > max_area:
-        max_area = area
-print(max_area)  # part 1
-
-polygon_lines = []
-for i in range(len(coords)):
-    polygon_lines.append((coords[i - 1], coords[i]))
-
-max_area = 0
-for combination in itertools.combinations(coords, 2):
-    [x1, y1], [x2, y2] = combination
-    min_x = min(x1, x2)
-    min_y = min(y1, y2)
-    max_x = max(x1, x2)
-    max_y = max(y1, y2)
+    part_1 = max(part_1, area)
     for p_line in polygon_lines:
         if not (
-            min_x >= max(p_line[0][0], p_line[1][0])
-            or max_x <= min(p_line[0][0], p_line[1][0])
-            or min_y >= max(p_line[0][1], p_line[1][1])
-            or max_y <= min(p_line[0][1], p_line[1][1])
+            min(x1, x2) >= max(p_line[0][0], p_line[1][0])
+            or max(x1, x2) <= min(p_line[0][0], p_line[1][0])
+            or min(y1, y2) >= max(p_line[0][1], p_line[1][1])
+            or max(y1, y2) <= min(p_line[0][1], p_line[1][1])
         ):
             break
     else:
-        area = (abs(x1 - x2) + 1) * (abs(y1 - y2) + 1)
-        if area > max_area:
-            max_area = area
-print(max_area)  # part 2
+        part_2 = max(part_2, area)
+
+print(part_1, part_2)
